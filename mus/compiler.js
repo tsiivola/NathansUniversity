@@ -30,8 +30,7 @@ var compileT = function(t, e) {
     if (e.tag === 'par')
         return compileT(t, e.left).concat( compileT(t, e.right) );
     if (e.tag === 'res')
-        return [ { tag: 'note', pitch: '',
-                 start: t, dur: e.dur } ];
+        return [];
     if (e.tag === 'repeat') {
         var tmp_a = [];
         var tmp_t = endTime(0, e.section);
