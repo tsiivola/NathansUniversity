@@ -1,5 +1,5 @@
 var endTime = function(t, e) {
-    if (e.tag === 'note')
+    if (e.tag === 'note' || e.tag === 'res')
         return t+e.dur;
     if (e.tag === 'seq')
         return endTime(t, e.left) + endTime(t, e.right);
@@ -17,6 +17,9 @@ var compileT = function(t, e) {
         return compileT(t, e.left).concat( compileT(endTime(t, e.left), e.right) );
     if (e.tag === 'par')
         return compileT(t, e.left).concat( compileT(t, e.right) );
+    if (e.tag === 'res')
+        return [ { tag: 'note', pitch: '',
+                 start: t, dur: e.dur } ];
 };
 
 var compile = function (musexpr) {
@@ -29,7 +32,7 @@ var melody_mus =
       left: 
        { tag: 'seq',
          left: { tag: 'note', pitch: 'a4', dur: 250 },
-         right: { tag: 'note', pitch: 'b4', dur: 250 } },
+         right: { tag: 'res', dur: 250 } },
       right:
        { tag: 'seq',
          left: { tag: 'note', pitch: 'c4', dur: 500 },
