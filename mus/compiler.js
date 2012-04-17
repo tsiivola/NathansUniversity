@@ -1,3 +1,13 @@
+var convertPitch = function(p) {
+    return { "c":0,
+      "d":2,
+      "e":4,
+      "f":5,
+      "g":7,
+      "a":9,
+      "b":11 }[p[0]] + (p[1]*1+1)*12;
+};
+
 var endTime = function(t, e) {
     if (e.tag === 'note' || e.tag === 'res')
         return t+e.dur;
@@ -11,7 +21,7 @@ var endTime = function(t, e) {
 
 var compileT = function(t, e) {
     if (e.tag === 'note')
-        return [ { tag: 'note', pitch: e.pitch, 
+        return [ { tag: 'note', pitch: convertPitch(e.pitch),
                  start: t, dur: e.dur } ];
     if (e.tag === 'seq') 
         return compileT(t, e.left).concat( compileT(endTime(t, e.left), e.right) );
