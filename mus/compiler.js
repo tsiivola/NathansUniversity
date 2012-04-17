@@ -17,6 +17,8 @@ var endTime = function(t, e) {
         return Math.max(t, 
             endTime(t, e.left), endTime(t, e.right));
     }
+    if (e.tag === 'repeat')
+        return t + e.count * endTime(0, e.section);
 };
 
 var compileT = function(t, e) {
@@ -30,6 +32,15 @@ var compileT = function(t, e) {
     if (e.tag === 'res')
         return [ { tag: 'note', pitch: '',
                  start: t, dur: e.dur } ];
+    if (e.tag === 'repeat') {
+        var tmp_a = [];
+        var tmp_t = endTime(0, e.section);
+        for (var i=0; i < e.count; i+=1) {
+            tmp_a = tmp_a.concat( compileT(t, e.section ) );
+            t += tmp_t;
+        }
+        return tmp_a;
+    }
 };
 
 var compile = function (musexpr) {
@@ -37,16 +48,25 @@ var compile = function (musexpr) {
 };
 
 
-var melody_mus = 
+var melody_mus =
     { tag: 'seq',
-      left: 
+      left:
        { tag: 'seq',
          left: { tag: 'note', pitch: 'a4', dur: 250 },
          right: { tag: 'res', dur: 250 } },
-      right:
-       { tag: 'seq',
-         left: { tag: 'note', pitch: 'c4', dur: 500 },
-         right: { tag: 'note', pitch: 'd4', dur: 500 } } };
+      right: {
+        tag: 'repeat',
+        section: { tag: 'seq',
+            left: { tag: 'note', pitch: 'c4', dur: 500 },
+            right: { tag: 'note', pitch: 'd4', dur: 500 } },
+        count: 2 }
+};
+
+var repeat_mus = { tag: 'repeat',
+  section: { tag: 'note', pitch: 'c4', dur: 250 },
+  count: 3 };
 
 console.log(melody_mus);
 console.log(compile(melody_mus));
+console.log(endTime(0, repeat_mus));
+console.log(compile(repeat_mus));
