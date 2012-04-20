@@ -12,9 +12,9 @@ var endTime = function(t, e) {
     if (e.tag === 'note' || e.tag === 'res')
         return t+e.dur;
     if (e.tag === 'seq')
-        return endTime(t, e.left) + endTime(t, e.right);
+        return endTime(endTime(t, e.left), e.right);
     if (e.tag === 'par') {
-        return Math.max(t, 
+        return Math.max(
             endTime(t, e.left), endTime(t, e.right));
     }
     if (e.tag === 'repeat')
