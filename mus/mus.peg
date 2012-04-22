@@ -1,0 +1,27 @@
+{
+var get_pitch = function(pitch, octave) { return pitch + (octave+4); }
+var get_duration = function(length) {
+    length = length || 4; // default value
+    return 1984 / length; }
+}
+
+start =
+    note
+
+note =
+    p:pitch o:octave l:length
+        { return { tag:   "note",
+                   pitch: get_pitch(p, o),
+                   dur:   get_duration(l) };
+        }
+
+pitch =
+    b:[abcdefg] a:[+-]? { return b+a; }
+
+octave =
+    o:"'"+ { return o.length; }
+  / o:","+ { return o.length * -1; }
+  / ""     { return 0; }
+
+length =
+    l:("32" / "16" / "8" / "4" / "2" / "1" / "") { return l; }
