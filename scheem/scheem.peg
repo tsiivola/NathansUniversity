@@ -1,5 +1,5 @@
 start =
-    expression
+    whitespace* e:expression whitespace* { return e; }
 
 expression =
     atom
@@ -7,7 +7,7 @@ expression =
     
 exps = 
     f:expression whitespace r:exps { return [f].concat(r); }
-  / f:expression { return [f]; }
+  / f:expression  { return [f]; }
 
 validchar
     = [0-9a-zA-Z_?!+-=@#$%^&*/.]
@@ -16,4 +16,6 @@ atom =
     chars:validchar+
         { return chars.join(""); }
 
-whitespace = [\n\t ]+
+whitespace =
+    ";;" [^\n]* [\n] whitespace*
+  / [\n\t ]+         whitespace*

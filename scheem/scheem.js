@@ -18,6 +18,15 @@ fs.readFile('scheem.peg', 'ascii', function(err, data) {
    (+ b c)\
    5 6))"),
                     ["+", ["*", ["+", "b", "c"], "5", "6"]] );
+    assert.deepEqual( parse("\
+;; factorial\n\
+(define factorial (n) ;; takes one argument n \n\
+    ;; this is the body of the function\n\
+    (* n\
+       (factorial (- n 1))))\
+;; factorial\n\
+"),
+                    ["define", "factorial", ["n"], ["*", "n", ["factorial", ["-", "n", "1"]]]]);
 });
 
 
