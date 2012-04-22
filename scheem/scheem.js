@@ -27,6 +27,9 @@ fs.readFile('scheem.peg', 'ascii', function(err, data) {
 ;; factorial\n\
 "),
                     ["define", "factorial", ["n"], ["*", "n", ["factorial", ["-", "n", "1"]]]]);
+    assert.deepEqual(parse("'asdf"), ["quote", "asdf"]);
+    assert.deepEqual(parse("'(a (b c))"), ["quote", ["a", ["b", "c"]]]);
+    assert.deepEqual(parse("(a '(b c))"), ["a", ["quote", ["b", "c"]]]);
 });
 
 
