@@ -18,5 +18,5 @@ atom =
         { return chars.join(""); }
 
 whitespace =
-    ";;" [^\n]* [\n] whitespace*
-  / [\n\t ]+         whitespace*
+    ";;" [^\n]* whitespace*
+  / [\n\t ]+    whitespace*
