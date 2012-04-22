@@ -6,7 +6,7 @@ expression =
   / "(" e:exps ")" { return e; }
     
 exps = 
-    f:expression " " r:exps { return [f].concat(r); }
+    f:expression whitespace r:exps { return [f].concat(r); }
   / f:expression { return [f]; }
 
 validchar
@@ -15,3 +15,5 @@ validchar
 atom =
     chars:validchar+
         { return chars.join(""); }
+
+whitespace = " "+
