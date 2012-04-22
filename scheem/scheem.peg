@@ -3,7 +3,7 @@ start =
 
 expression =
     atom
-  / "(" e:exps ")" { return e; }
+  / "(" whitespace? e:exps whitespace? ")" { return e; }
     
 exps = 
     f:expression whitespace r:exps { return [f].concat(r); }
@@ -16,4 +16,4 @@ atom =
     chars:validchar+
         { return chars.join(""); }
 
-whitespace = " "+
+whitespace = [\n\t ]+
