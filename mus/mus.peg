@@ -10,10 +10,22 @@ start =
     sequence_of_notes
 
 sequence_of_notes =
-    l:(note/rest) " "+ r:sequence_of_notes
+    l:(parallel_notes) " "+ r:sequence_of_notes
         { return { tag: "seq", left: l, right: r }; }
+  / parallel_notes
+
+parallel_notes =
+    "(" " "* l:note " "+ r:parallel_notes_inside " "* ")"
+        { return { tag: "par", left:l, right:r }; }
+  / "(" " "* l:note " "* ")"
+        { return l; }
   / note
   / rest
+
+parallel_notes_inside =
+    l:note " "+ r:parallel_notes_inside
+        { return { tag: "par", left: l, right: r}; }
+  / note
 
 rest =
     "r" l:length
