@@ -1,12 +1,18 @@
 {
+var quarter_note_length = 496;
 var get_pitch = function(pitch, octave) { return pitch + (octave+4); }
 var get_duration = function(length) {
-    length = length || 4; // default value
-    return 1984 / length; }
+    if (length) return quarter_note_length * 4 / length;
+    return null; }
 }
 
 start =
-    note
+    sequence_of_notes
+
+sequence_of_notes =
+    l:note " "+ r:sequence_of_notes
+        { return { tag: "seq", left: l, right: r }; }
+  / note
 
 note =
     p:pitch o:octave l:length
