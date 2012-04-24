@@ -10,9 +10,14 @@ start =
     sequence_of_notes
 
 sequence_of_notes =
-    l:note " "+ r:sequence_of_notes
+    l:(note/rest) " "+ r:sequence_of_notes
         { return { tag: "seq", left: l, right: r }; }
   / note
+  / rest
+
+rest =
+    "r" l:length
+        { return { tag: "res", dur: get_duration(l) }; }
 
 note =
     p:pitch o:octave l:length
