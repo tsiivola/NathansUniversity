@@ -10,9 +10,10 @@ start =
     sequence_of_notes
 
 sequence_of_notes =
-    l:(parallel_notes) " "+ r:sequence_of_notes
+    l:(parallel_notes/repeat) " "+ r:sequence_of_notes
         { return { tag: "seq", left: l, right: r }; }
   / parallel_notes
+  / repeat
 
 parallel_notes =
     "(" " "* l:note " "+ r:parallel_notes_inside " "* ")"
@@ -26,6 +27,10 @@ parallel_notes_inside =
     l:note " "+ r:parallel_notes_inside
         { return { tag: "par", left: l, right: r}; }
   / note
+
+repeat =
+    "[" " "* s:sequence_of_notes " "* "]" n:num
+        { return { tag: "repeat", times: n, section: s}; }
 
 rest =
     "r" l:length
@@ -48,3 +53,5 @@ octave =
 
 length =
     l:("32" / "16" / "8" / "4" / "2" / "1" / "") { return l; }
+
+num = n:([1-9][0-9]*) { return n.join(""); }
