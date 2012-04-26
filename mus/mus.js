@@ -29,6 +29,18 @@ fs.readFile('mus.peg', 'ascii', function(err, data) {
                                                  "left":{"tag":"note","pitch":"a+3","dur":62},
                                                  "right":{"tag":"note","pitch":"g+4","dur":248}}},
                                 "right":{"tag":"note","pitch":"a6","dur":124}}});
+    assert.deepEqual( parse("[ g+8 (e'16 a+,32 g+8) a''16 ]3"),
+                      {"tag":"repeat",
+                       "times":"3",
+                       "section":{"tag":"seq",
+                                  "left":{"tag":"note","pitch":"g+4","dur":248},
+                                  "right":{"tag":"seq",
+                                           "left":{"tag":"par",
+                                                   "left":{"tag":"note","pitch":"e5","dur":124},
+                                                   "right":{"tag":"par",
+                                                            "left":{"tag":"note","pitch":"a+3","dur":62},
+                                                            "right":{"tag":"note","pitch":"g+4","dur":248}}},
+                                           "right":{"tag":"note","pitch":"a6","dur":124}}}});
 });
 
 
