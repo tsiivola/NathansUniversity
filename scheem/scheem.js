@@ -1,3 +1,8 @@
+var PEG = require('pegjs');
+var fs = require('fs');
+
+var parseScheem = PEG.buildParser(fs.readFileSync('scheem.peg').toString()).parse;
+
 var arithmetic = function(expr, env) {
     switch (expr[0]) {
         case '+':
@@ -77,6 +82,5 @@ var evalScheem = function (expr, env) {
     }
 };
 
-
-
+module.exports.parseScheem = parseScheem;
 module.exports.evalScheem = evalScheem;
