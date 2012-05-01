@@ -1,36 +1,53 @@
-var PEG = require('pegjs');
-var assert = require('assert');
-var fs = require('fs'); // for loading files
+var arithmetic = function(expr, env) {
+    switch (expr[0]) {
+        case '+':
+            return evalScheem(expr[1], env) +
+                   evalScheem(expr[2], env);
+        case '-':
+            return evalScheem(expr[1], env) -
+                   evalScheem(expr[2], env);
+        case '*':
+            return evalScheem(expr[1], env) *
+                   evalScheem(expr[2], env);
+        case '/':
+            return evalScheem(expr[1], env) /
+                   evalScheem(expr[2], env);
+    }
+}
 
-fs.readFile('scheem.peg', 'ascii', function(err, data) {
-    // Show the PEG grammar file
-    console.log(data);
-    // Create my parser
-    parse = PEG.buildParser(data).parse;
-    // Do a test
-    assert.deepEqual( parse("(a b c)"), ["a", "b", "c"] );
-    assert.deepEqual( parse("(a (b c))"), ["a", ["b", "c"]] );
-    assert.deepEqual( parse("(+ (* (+ b c) 5 6))"), ["+", ["*", ["+", "b", "c"], "5", "6"]] );
-    assert.deepEqual( parse("(+   (*  (+  b c)  5 6))"), ["+", ["*", ["+", "b", "c"], "5", "6"]] );
-    assert.deepEqual( parse("(+   (  *  ( +  b c  ) 5 6))"), ["+", ["*", ["+", "b", "c"], "5", "6"]] );
-    assert.deepEqual( parse("\
-(+ (* \
-   (+ b c)\
-   5 6))"),
-                    ["+", ["*", ["+", "b", "c"], "5", "6"]] );
-    assert.deepEqual( parse("\
-;; factorial\n\
-(define factorial (n) ;; takes one argument n \n\
-    ;; this is the body of the function\n\
-    (* n\
-       (factorial (- n 1))))\
-;; factorial\n\
-"),
-                    ["define", "factorial", ["n"], ["*", "n", ["factorial", ["-", "n", "1"]]]]);
-    assert.deepEqual(parse("'asdf"), ["quote", "asdf"]);
-    assert.deepEqual(parse("'(a (b c))"), ["quote", ["a", ["b", "c"]]]);
-    assert.deepEqual(parse("(a '(b c))"), ["a", ["quote", ["b", "c"]]]);
-});
+var evalScheem = function (expr, env) {
+    // Numbers evaluate to themselves
+    if (typeof expr === 'number') {
+        return expr;
+    }
+    // Strings are variable references
+    if (typeof expr === 'string') {
+        return env[expr];
+    }
+    // Look at head of list for operation
+    switch (expr[0]) {
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+            return arithmetic(expr, env);
+        case 'quote':
+            return expr[1];
+        case 'begin':
+            var i, n = (expr.length - 1);
+            for(i=1;i<n; i++) {
+                evalScheem(expr[i], env);
+            }
+            return evalScheem(expr[i], env);;
+        case 'define':
+            if (env[expr[1]]) throw new Error("Attempted re-definition of: " + expr[1]);
+            env[expr[1]] = evalScheem(expr[2], env); return 0;
+        case 'set!':
+            if (!env[expr[1]]) throw new Error("Attempted set! of non-existing variable: " + expr[1]);
+            env[expr[1]] = evalScheem(expr[2], env); return 0;
+    }
+};
 
 
 
+module.exports.evalScheem = evalScheem;
