@@ -82,5 +82,11 @@ var evalScheem = function (expr, env) {
     }
 };
 
+var evalScheemString = function(scheem_string, env) {
+    env = env || {};
+    return evalScheem(parseScheem(scheem_string), {});
+}
+
 module.exports.parseScheem = parseScheem;
 module.exports.evalScheem = evalScheem;
+module.exports.evalScheemString = evalScheemString;
