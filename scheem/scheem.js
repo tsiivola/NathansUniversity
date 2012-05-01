@@ -36,6 +36,8 @@ var evalScheem = function (expr, env) {
     }
     // Strings are variable references
     if (typeof expr === 'string') {
+        // support for boolean values
+        if (expr === '#t' || expr === '#f') return expr;
         return env[expr];
     }
     // Look at head of list for operation
@@ -56,12 +58,12 @@ var evalScheem = function (expr, env) {
             for(i=1;i<n; i++) {
                 evalScheem(expr[i], env);
             }
-            return evalScheem(expr[i], env);;
+            return evalScheem(expr[i], env);
         case 'define':
             if (env[expr[1]]) throw new Error("Attempted re-definition of: " + expr[1]);
             env[expr[1]] = evalScheem(expr[2], env); return 0;
         case 'set!':
-            if (!env[expr[1]]) throw new Error("Attempted set! of non-existing variable: " + expr[1]);
+            if (env[expr[1]] === undefined) throw new Error("Attempted set! of non-existing variable: " + expr[1]);
             env[expr[1]] = evalScheem(expr[2], env); return 0;
         case 'cons':
             return [evalScheem(expr[1], env)].concat(evalScheem(expr[2], env));
@@ -69,6 +71,9 @@ var evalScheem = function (expr, env) {
             return evalScheem(expr[1], env)[0];
         case 'cdr':
             return evalScheem(expr[1], env).slice(1);
+        case 'if':
+            if (evalScheem(expr[1], env) === '#t') return evalScheem(expr[2], env);
+            else return evalScheem(expr[3], env);
     }
 };
 

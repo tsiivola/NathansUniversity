@@ -136,3 +136,28 @@ suite('Comparison:', function() {
         assert.deepEqual(evalScheem(['<', 2, 1], {}), '#f');
     });
 });
+
+suite('Conditional if:', function() {
+    test('Return different value depending on condition', function() {
+        assert.deepEqual(evalScheem(['if', '#t', 1, 2], {}), 1);
+        assert.deepEqual(evalScheem(['if', '#f', 1, 2], {}), 2);
+    });
+    test('Evaluate only one branch depending on condition', function() {
+        assert.deepEqual(evalScheem(['begin',
+                                        ['define', 'a', 1],
+                                        ['define', 'b', 2],
+                                        ['if', '#t',
+                                            ['set!', 'a', 3],
+                                            ['set!', 'b', 4]],
+                                        ['+', 'a', 'b']],
+        {}), 5);
+        assert.deepEqual(evalScheem(['begin',
+                                        ['define', 'a', 1],
+                                        ['define', 'b', 2],
+                                        ['if', '#f',
+                                            ['set!', 'a', 3],
+                                            ['set!', 'b', 4]],
+                                        ['+', 'a', 'b']],
+        {}), 5);
+    });
+});
