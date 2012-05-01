@@ -91,3 +91,34 @@ suite('Begin and varibles:', function() {
         );
     });
 });
+
+suite('List operations:', function() {
+    test('Cons an element to a list', function() {
+        assert.deepEqual(
+            evalScheem(['cons', 1, ['quote', [2, 3, 4, 5]]], {}), [1,2,3,4,5]);
+    });
+    test('Get the first element of list (car)', function() {
+        assert.deepEqual(
+            evalScheem(['car', ['quote', [2, 3, 4, 5]]], {}), 2);
+    });
+    test('Get the rest of list (cdr)', function() {
+        assert.deepEqual(
+            evalScheem(['cdr', ['quote', [2, 3, 4, 5]]], {}), [3,4,5]);
+    });
+});
+
+suite('List operations:', function() {
+    test('Cons an element to a list', function() {
+        assert.deepEqual(
+            evalScheem(['cons', 1, ['quote', [2, 3, 4, 5]]], {}), [1,2,3,4,5]);
+    });
+    test('Get the first element of list (car)', function() {
+        assert.deepEqual(
+            evalScheem(['car', ['quote', [2, 3, 4, 5]]], {}), 2);
+    });
+    test('Get the rest of list (cdr)', function() {
+        assert.deepEqual(
+            evalScheem(['cdr', ['quote', [2, 3, 4, 5]]], {}), [3,4,5]);
+    });
+});
+

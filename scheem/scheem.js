@@ -45,6 +45,12 @@ var evalScheem = function (expr, env) {
         case 'set!':
             if (!env[expr[1]]) throw new Error("Attempted set! of non-existing variable: " + expr[1]);
             env[expr[1]] = evalScheem(expr[2], env); return 0;
+        case 'cons':
+            return [evalScheem(expr[1], env)].concat(evalScheem(expr[2], env));
+        case 'car':
+            return evalScheem(expr[1], env)[0];
+        case 'cdr':
+            return evalScheem(expr[1], env).slice(1);
     }
 };
 
