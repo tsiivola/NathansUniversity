@@ -15,6 +15,20 @@ var arithmetic = function(expr, env) {
     }
 }
 
+var comparison = function(expr, env) {
+    switch (expr[0]) {
+        case '=':
+            return (evalScheem(expr[1], env) === evalScheem(expr[2], env)) ?
+                '#t' : '#f';
+        case '<':
+            return (evalScheem(expr[1], env) < evalScheem(expr[2], env)) ?
+                '#t' : '#f';
+        case '>':
+            return (evalScheem(expr[1], env) > evalScheem(expr[2], env)) ?
+                '#t' : '#f';
+    }
+}
+
 var evalScheem = function (expr, env) {
     // Numbers evaluate to themselves
     if (typeof expr === 'number') {
@@ -31,6 +45,10 @@ var evalScheem = function (expr, env) {
         case '*':
         case '/':
             return arithmetic(expr, env);
+        case '=':
+        case '<':
+        case '>':
+            return comparison(expr, env);
         case 'quote':
             return expr[1];
         case 'begin':

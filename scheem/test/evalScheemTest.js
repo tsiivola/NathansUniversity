@@ -122,3 +122,17 @@ suite('List operations:', function() {
     });
 });
 
+suite('Comparison:', function() {
+    test('Equals', function() {
+        assert.deepEqual(evalScheem(['=', 1, 1], {}), '#t');
+        assert.deepEqual(evalScheem(['=', 1, 2], {}), '#f');
+    });
+    test('Greater than', function() {
+        assert.deepEqual(evalScheem(['>', 2, 1], {}), '#t');
+        assert.deepEqual(evalScheem(['>', 1, 2], {}), '#f');
+    });
+    test('Less than', function() {
+        assert.deepEqual(evalScheem(['<', 1, 2], {}), '#t');
+        assert.deepEqual(evalScheem(['<', 2, 1], {}), '#f');
+    });
+});
