@@ -1,7 +1,10 @@
-var PEG = require('pegjs');
-var fs = require('fs');
-
-var parseScheem = PEG.buildParser(fs.readFileSync('scheem.peg').toString()).parse;
+if (typeof module !== 'undefined') {
+    var PEG = require('pegjs');
+    var fs = require('fs');
+    var parseScheem = PEG.buildParser(fs.readFileSync('scheem.peg').toString()).parse;
+} else {
+    parseScheem = Scheem.parse;
+}
 
 var arithmetic = function(expr, env) {
     if (expr.length != 3) throw new Error("Expected 2 arguments to " + expr[0]);
@@ -90,6 +93,9 @@ var evalScheemString = function(scheem_string, env) {
     return evalScheem(parseScheem(scheem_string), {});
 }
 
-module.exports.parseScheem = parseScheem;
-module.exports.evalScheem = evalScheem;
-module.exports.evalScheemString = evalScheemString;
+// If we are used as Node module, export evalScheem
+if (typeof module !== 'undefined') {
+    module.exports.parseScheem = parseScheem;
+    module.exports.evalScheem = evalScheem;
+    module.exports.evalScheemString = evalScheemString;
+}
