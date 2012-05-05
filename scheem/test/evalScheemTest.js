@@ -53,6 +53,12 @@ suite('Arithmetic:', function() {
             6
         );
     });
+    test('exceptions', function() {
+        assert.throws( function() { evalScheem(['+', 'a', 5], {}) });
+        assert.throws( function() { evalScheem(['+', '4', 'bb'], {}) });
+        assert.throws( function() { evalScheem(['-', '4', '5', '6'], {}) });
+        assert.throws( function() { evalScheem(['-', '11'], {}) });
+    });
 });
 
 suite('Begin and varibles:', function() {

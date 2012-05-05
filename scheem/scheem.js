@@ -4,19 +4,20 @@ var fs = require('fs');
 var parseScheem = PEG.buildParser(fs.readFileSync('scheem.peg').toString()).parse;
 
 var arithmetic = function(expr, env) {
+    if (expr.length != 3) throw new Error("Expected 2 arguments to " + expr[0]);
+    var e1 = evalScheem(expr[1], env);
+    var e2 = evalScheem(expr[2], env);
+    if (typeof e1 != 'number' || typeof e2 != 'number')
+        throw new Error("Expected numbers for " + expr[0]);
     switch (expr[0]) {
         case '+':
-            return evalScheem(expr[1], env) +
-                   evalScheem(expr[2], env);
+            return e1 + e2;
         case '-':
-            return evalScheem(expr[1], env) -
-                   evalScheem(expr[2], env);
+            return e1 - e2;
         case '*':
-            return evalScheem(expr[1], env) *
-                   evalScheem(expr[2], env);
+            return e1 * e2;
         case '/':
-            return evalScheem(expr[1], env) /
-                   evalScheem(expr[2], env);
+            return e1 / e2;
     }
 }
 
@@ -43,6 +44,8 @@ var evalScheem = function (expr, env) {
     if (typeof expr === 'string') {
         // support for boolean values
         if (expr === '#t' || expr === '#f') return expr;
+        var v = env[expr];
+        if (v === undefined) throw new Error(expr + " not defined!");
         return env[expr];
     }
     // Look at head of list for operation
