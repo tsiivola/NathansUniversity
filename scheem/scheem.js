@@ -55,7 +55,7 @@ var env_to_s = function (env) {
 var expr_to_s = function (expr) {
     if (expr instanceof Array) {
         var s = "(";
-        for (i=0; i<expr.length; i+=1) {
+        for (var i=0; i<expr.length; i+=1) {
             s += expr_to_s(expr[i]) + " ";
         }
         return s + ")";
