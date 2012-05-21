@@ -14,6 +14,7 @@
 (+ 1 2)</textarea>
 
 <input id="submitbutton" type="button" value="Run" />
+Debug: <input id="debugcheckbox" type="checkbox" name="Debug" />
 
 <div id="console" class="console" style="border:solid 1px;">
 <p>This is where output goes.</p>
@@ -27,6 +28,7 @@
   // After page load
   $(function() {
     $('#submitbutton').click(function() {
+        global_debug = $('#debugcheckbox').is(':checked');
         var user_text = $('#input').val();
         $('#console').html(''); // clear console
         log_console('Your input was: "' + user_text + '"');
