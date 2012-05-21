@@ -12,13 +12,18 @@
 
 <textarea id="input" style="width:800px; height:300px;">
 (begin
-  (define a 0)
-  (define b 0)
-  (if (= 1 2) (set! b 10) (set! b 20))
-  (set! a 5)
-  (* (+ a b) 2))</textarea>
+
+(define factorial
+  (lambda n
+    (if (= n 0) 1
+        (* n (factorial (- n 1))))))
+
+(factorial 9)
+
+)</textarea>
 
 <input id="submitbutton" type="button" value="Run" />
+Debug: <input id="debugcheckbox" type="checkbox" name="Debug" />
 
 <div id="console" class="console" style="border:solid 1px;">
 <p>This is where output goes.</p>
@@ -32,6 +37,7 @@
   // After page load
   $(function() {
     $('#submitbutton').click(function() {
+        global_debug = $('#debugcheckbox').is(':checked');
         var user_text = $('#input').val();
         $('#console').html(''); // clear console
         log_console('Your input was: "' + user_text + '"');
