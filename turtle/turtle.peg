@@ -1,0 +1,101 @@
+statement_list =
+    ws f:statement ws rest:statement_list
+      { if (f instanceof Array) return f.concat(rest); 
+        else return [f].concat(rest); }
+  / ws f:statement ws
+      { if (f instanceof Array) return f;
+        else return [f]; }
+
+statement =
+    definition
+  / if_or_repeat
+  / declaration_with_assignment
+  / declaration
+  / assignment
+  / function_call
+
+compound_statement = "{" ws sl:statement_list "}"
+                     { return sl; }
+
+function_call =
+    i:identifier ws "(" ws args:expression_list? ws ")"
+      { return {tag:"call", name:i, args:args || []}; }
+
+definition =
+    "define" ws i:identifier ws "(" ws args:identifier_list? ws ")" ws b:compound_statement
+      { return { tag:"define", name:i, args:args || [], body:b }; }
+
+if_or_repeat =
+    t:("if"/"repeat") ws "(" ws c:expression ws ")" ws b:compound_statement
+      { return {tag:t, cond:c, body:b}; }
+
+declaration = 
+    "var" ws i:identifier
+      { return {tag:"declaration", ident:i}; }
+
+assignment =
+    v:identifier ws ":=" ws val:expression
+      { return {tag:"assignment", variable:v, value:val}; }
+
+declaration_with_assignment =
+    "var" ws i:identifier ws ":=" ws value:expression
+      { return [{tag:"declaration", ident:i}, 
+                {tag:"assignment", variable:i, value:value} ]; }
+
+expression =
+    expr:comparative
+      { return expr; }
+
+comp_op = "<=" / ">=" / "!=" / "==" / "<" / ">"
+
+comparative
+    = left:additive ws op:comp_op ws right:comparative
+        { return {tag: op, left:left, right:right}; }
+    / additive
+
+additive_op = "+" / "-"
+
+additive
+    = left:multiplicative ws op:additive_op ws right:additive
+        { return {tag:op, left:left, right:right}; }
+    / multiplicative
+
+mult_op = "*" / "/"
+
+multiplicative
+    = left:primary ws op:mult_op ws right:multiplicative
+        { return {tag:op, left:left, right:right}; }
+    / primary
+
+primary
+    = number
+    / function_call
+    / identifier
+    / "(" ws expr:expression ws ")"
+        { return expr; }
+
+
+expression_list =
+    f:expression ws "," ws rest:expression_list
+      { return [f].concat(rest); }
+  / f:expression
+      { return [f]; }
+
+identifier =
+    i:[a-z]+ { return i.join(""); }
+
+identifier_list =
+    f:identifier ws "," ws rs:identifier_list
+      { return [f].concat(rs); }
+  / f:identifier
+      { return [f]; }
+
+number_frac
+    = "." chars:[0-9]*
+        { return "." + chars.join(''); }
+
+number
+    = minus:[-]? chars:[0-9]+ frac:number_frac?
+        { return parseFloat(minus + chars.join('') + frac); }
+
+ws = [ \t\n]* ("#"[^\n]*[\n])? [ \t\n]*
