@@ -1,5 +1,7 @@
+start = statement_list / ws { return []; }
+
 statement_list =
-    ws f:statement ws rest:statement_list
+    ws f:statement [ \t]* (comment+/[\n;]) rest:statement_list
       { if (f instanceof Array) return f.concat(rest); 
         else return [f].concat(rest); }
   / ws f:statement ws
@@ -98,4 +100,7 @@ number
     = minus:[-]? chars:[0-9]+ frac:number_frac?
         { return parseFloat(minus + chars.join('') + frac); }
 
-ws = [ \t\n]* ("#"[^\n]*[\n])? [ \t\n]*
+ws = [ \n\t]* comment* [ \n\t]*
+comment = 
+    ("#"[^\n]*[\n]) ws
+  / ("#"[^\n]*) ws
